@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Afficher les Personnes</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; font-size: 16px; margin-bottom: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 5px 0; }
+        a { display: block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>Liste des Personnes</h1>
+<button onclick="afficherPersonnes()">Afficher</button>
+<div id="liste"></div>
+
+<a href="index.html">Retour à l'accueil</a>
+
+<script>
+    function afficherPersonnes() {
+        fetch('http://localhost:8080/api/personnes')
+        .then(response => {
+            if (!response.ok) throw new Error('Erreur HTTP : ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            const div = document.getElementById('liste');
+            div.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                div.innerHTML = '<p>Aucune personne trouvée.</p>';
+                return;
+            }
+
+            const ul = document.createElement('ul');
+            data.forEach(p => {
+                const li = document.createElement('li');
+                li.textContent = `${p.nom} - ${p.age} ans`;
+                ul.appendChild(li);
+            });
+            div.appendChild(ul);
+        })
+        .catch(error => {
+            console.error('Erreur fetch:', error);
+            document.getElementById('liste').innerHTML = '<p style="color:red;">Impossible de récupérer les données.</p>';
+        });
+    }
+</script>
+
+</body>
+</html>
