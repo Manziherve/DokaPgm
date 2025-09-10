@@ -21,7 +21,7 @@
 
 <script>
     function afficherPersonnes() {
-        fetch('http://localhost:8080/api/personnes')
+        fetch('https://monpgm-cy65.onrender.com/api/personnes')
         .then(response => {
             if (!response.ok) throw new Error('Erreur HTTP : ' + response.status);
             return response.json();
