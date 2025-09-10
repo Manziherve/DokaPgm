@@ -6,8 +6,8 @@ services:
     dockerfilePath: ./Dockerfile
     autoDeploy: true
     envVars:
-      - key: PORT
-        value: 8080
+      # - key: PORT
+      #   value: 8080
 
       # À compléter avec les infos Render PostgreSQL
       - key: DB_HOST
