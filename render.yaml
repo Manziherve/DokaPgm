@@ -8,3 +8,15 @@ services:
     envVars:
       - key: PORT
         value: 8080
+
+      # À compléter avec les infos Render PostgreSQL
+      - key: DB_HOST
+        value: dpg-d30u4enfte5s73fs6l80-a
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        value: monpgmdb
+      - key: DB_USER
+        value: monpgmdb_user
+      - key: DB_PASSWORD
+        value: nR4P4G6oRZU46yDkGx8JweiPV3QPNOxn
