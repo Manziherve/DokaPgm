@@ -39,7 +39,7 @@
             age: parseInt(document.getElementById('age').value)
         };
 
-        fetch('https://monpgm-cy65.onrender.com/api/personnes', {
+        fetch(window.location.origin + '/api/personnes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
