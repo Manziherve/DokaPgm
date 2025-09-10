@@ -40,6 +40,9 @@
         };
         console.log('Données envoyées:', JSON.stringify(personne));
 
+        // Debug : affichage des données à l'écran
+        document.getElementById('message').innerHTML = `<p style="color:blue;">Envoi de: ${JSON.stringify(personne)}</p>`;
+
         fetch(window.location.origin + '/api/personnes', {
             method: 'POST',
             headers: {
