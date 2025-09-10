@@ -38,6 +38,7 @@
             nom: document.getElementById('nom').value,
             age: parseInt(document.getElementById('age').value)
         };
+        console.log('Données envoyées:', JSON.stringify(personne));
 
         fetch(window.location.origin + '/api/personnes', {
             method: 'POST',
