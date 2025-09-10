@@ -5,119 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter une personne</title>
     <style>
+        * { box-sizing: border-box; }
         body { 
             font-family: Arial, sans-serif; 
+            max-width: 500px; 
+            margin: 40px auto; 
             padding: 20px; 
-            max-width: 400px; 
-            margin: 0 auto;
+            background: #f8f9fa; 
         }
-        .form-group { margin-bottom: 15px; }
-        label { 
-            display: block; 
-            margin-bottom: 5px; 
-            font-weight: bold;
-        }
+        h1 { text-align: center; color: #333; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .field { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
         input { 
             width: 100%; 
-            padding: 8px; 
-            font-size: 14px; 
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            padding: 12px; 
+            font-size: 16px; 
+            border: 2px solid #ddd; 
+            border-radius: 6px;
+            transition: border-color 0.3s;
         }
+        input:focus { outline: none; border-color: #007bff; }
         button { 
-            background-color: #007bff; 
-            color: white; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer;
-            font-size: 16px;
             width: 100%;
+            background: #007bff; 
+            color: white; 
+            padding: 12px; 
+            font-size: 16px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        button:hover { background-color: #0056b3; }
-        #message { margin-top: 15px; text-align: center; }
-        .nav-link { 
-            display: inline-block; 
-            margin-top: 20px; 
-            color: #007bff; 
-            text-decoration: none;
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .message { 
+            margin: 15px 0; 
+            padding: 10px; 
+            border-radius: 6px; 
+            text-align: center;
+            font-weight: bold;
         }
-        .nav-link:hover { text-decoration: underline; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #cce7ff; color: #004085; border: 1px solid #b3d7ff; }
+        .nav { text-align: center; margin-top: 20px; }
+        .nav a { color: #007bff; text-decoration: none; }
+        .nav a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-
-<h1>Ajouter une Personne</h1>
-
-<form id="personForm">
-    <div class="form-group">
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" required>
-    </div>
+    <h1>➕ Ajouter une Personne</h1>
     
-    <div class="form-group">
-        <label for="age">Âge :</label>
-        <input type="number" id="age" name="age" min="0" max="120" required>
-    </div>
+    <form id="form">
+        <div class="field">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" required>
+        </div>
+        
+        <div class="field">
+            <label for="age">Âge :</label>
+            <input type="number" id="age" min="0" max="120" required>
+        </div>
+        
+        <button type="submit" id="btn">Ajouter</button>
+    </form>
     
-    <button type="submit">Ajouter</button>
-</form>
-
-<div id="message"></div>
-
-<a href="index.html" class="nav-link">← Retour à l'accueil</a>
+    <div id="message"></div>
+    
+    <div class="nav">
+        <a href="/">🏠 Accueil</a> | 
+        <a href="/afficher.html">👥 Voir toutes les personnes</a>
+    </div>
 
 <script>
-    document.getElementById('personForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const nom = document.getElementById('nom').value.trim();
-        const age = parseInt(document.getElementById('age').value);
-        
-        if (!nom) {
-            showMessage('Le nom est requis.', 'error');
-            return;
-        }
-        
-        if (isNaN(age) || age < 0 || age > 120) {
-            showMessage('L\'âge doit être un nombre valide entre 0 et 120.', 'error');
-            return;
-        }
+const form = document.getElementById('form');
+const btn = document.getElementById('btn');
+const msg = document.getElementById('message');
 
-        const personne = { nom, age: parseInt(age) };
-        
-        showMessage('Ajout en cours...', 'info');
-
-        fetch('/api/personnes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(personne)
-        })
-        .then(response => {
-            console.log('Response status:', response.status);
-            if (!response.ok) {
-                return response.text().then(text => {
-                    throw new Error(`Erreur HTTP: ${response.status} - ${text}`);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            showMessage(`${data.nom} ajouté avec succès!`, 'success');
-            document.getElementById('personForm').reset();
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showMessage('Erreur lors de l\'ajout. Veuillez réessayer.', 'error');
-        });
-    });
-
-    function showMessage(text, type) {
-        const messageDiv = document.getElementById('message');
-        const color = type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue';
-        messageDiv.innerHTML = `<p style="color: ${color};">${text}</p>`;
+form.onsubmit = async function(e) {
+    e.preventDefault();
+    
+    const nom = document.getElementById('nom').value.trim();
+    const age = parseInt(document.getElementById('age').value);
+    
+    if (!nom || age < 0 || age > 120) {
+        showMsg('Veuillez remplir correctement tous les champs.', 'error');
+        return;
     }
+    
+    btn.disabled = true;
+    btn.textContent = 'Ajout...';
+    showMsg('Ajout en cours...', 'info');
+    
+    try {
+        const response = await fetch('/api/personnes', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({ nom, age })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            showMsg(`✅ ${data.nom} ajouté avec succès !`, 'success');
+            form.reset();
+        } else {
+            throw new Error(`Erreur ${response.status}`);
+        }
+    } catch (error) {
+        console.error(error);
+        if (error.message.includes('fetch')) {
+            showMsg('❌ Problème de connexion. Actualisez la page (F5) et réessayez.', 'error');
+        } else {
+            showMsg('❌ Erreur lors de l\'ajout. Réessayez dans quelques secondes.', 'error');
+        }
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Ajouter';
+    }
+};
+
+function showMsg(text, type) {
+    msg.innerHTML = `<div class="message ${type}">${text}</div>`;
+    setTimeout(() => {
+        if (type === 'success') msg.innerHTML = '';
+    }, 3000);
+}
 </script>
 
 </body>
