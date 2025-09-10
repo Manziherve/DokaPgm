@@ -25,19 +25,4 @@ public class PersonneController {
     public Personne create(@RequestBody Personne p) {
         return service.save(p);
     }
-
-    @GetMapping("/health")
-    public String health() {
-        return "OK - API fonctionnelle";
-    }
-
-    @GetMapping("/test")
-    public String test() {
-        try {
-            long count = service.count();
-            return "OK - " + count + " personnes en base";
-        } catch (Exception e) {
-            return "ERREUR DB: " + e.getMessage();
-        }
-    }
 }

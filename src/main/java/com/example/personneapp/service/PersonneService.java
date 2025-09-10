@@ -23,8 +23,4 @@ public class PersonneService {
     public List<Personne> findAll() {
         return repository.findAll();
     }
-
-    public long count() {
-        return repository.count();
-    }
 }
