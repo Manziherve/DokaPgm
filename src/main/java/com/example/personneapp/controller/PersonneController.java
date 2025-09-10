@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/personnes")  // <- le "/" est important
-@CrossOrigin(origins = "*")          // <- nécessaire pour les appels depuis le navigateur
+@RequestMapping("/api/personnes")
+@CrossOrigin(origins = "*")
 public class PersonneController {
 
     private final PersonneService service;
