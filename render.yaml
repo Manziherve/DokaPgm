@@ -20,3 +20,5 @@ services:
         value: monpgmdb_user
       - key: DB_PASSWORD
         value: nR4P4G6oRZU46yDkGx8JweiPV3QPNOxn
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
