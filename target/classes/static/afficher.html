@@ -22,7 +22,7 @@
         const container = document.getElementById('personsList');
         container.innerHTML = '<p>Chargement...</p>';
         
-        fetch('https://monpgm-cy65.onrender.com/api/personnes')
+        fetch('/api/personnes')
         .then(response => {
             console.log('Réponse:', response.status);
             if (!response.ok) {
