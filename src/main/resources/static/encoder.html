@@ -13,7 +13,8 @@
     </style>
 </head>
 <body>
-    <h1>Ajouter une personne</h1>
+    <h1>Ajouter une personne - VERSION PRODUCTION</h1>
+    <p style="color: blue; font-weight: bold;">URL API: https://monpgm-cy65.onrender.com/api/personnes</p>
     
     <form id="personneForm">
         <input type="text" id="nom" placeholder="Nom" required>
@@ -44,7 +45,7 @@
                 console.log('Envoi vers:', 'https://monpgm-cy65.onrender.com/api/personnes');
                 console.log('Données:', personne);
                 
-                const response = await fetch('https://monpgm-cy65.onrender.com/api/personnes', {
+                const response = await fetch('https://monpgm-cy65.onrender.com/api/personnes?v=' + Date.now(), {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
