@@ -18,11 +18,23 @@ public class PersonneController {
 
     @GetMapping
     public List<Personne> getAll() {
-        return service.findAll();
+        System.out.println("GET /api/personnes appelé");
+        List<Personne> personnes = service.findAll();
+        System.out.println("Retour: " + personnes.size() + " personnes");
+        return personnes;
     }
 
     @PostMapping
     public Personne create(@RequestBody Personne p) {
-        return service.save(p);
+        System.out.println("POST /api/personnes appelé avec: " + p);
+        try {
+            Personne saved = service.save(p);
+            System.out.println("Personne sauvée: " + saved);
+            return saved;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la sauvegarde: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
