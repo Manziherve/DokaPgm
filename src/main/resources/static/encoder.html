@@ -107,11 +107,18 @@ form.onsubmit = async function(e) {
     try {
         console.log('🚀 Envoi requête vers API...');
         
+        // Détection automatique de l'environnement
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocal ? '/api/personnes' : 'https://monpgm-cy65.onrender.com/api/personnes';
+        
+        console.log('🌍 Environnement:', isLocal ? 'LOCAL' : 'PRODUCTION');
+        console.log('🔗 URL API:', apiUrl);
+        
         // Timeout de 15 secondes au lieu de 30
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
         
-        const response = await fetch('/api/personnes', {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',

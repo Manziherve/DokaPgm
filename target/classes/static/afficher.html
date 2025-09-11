@@ -22,7 +22,14 @@
         const container = document.getElementById('personsList');
         container.innerHTML = '<p>Chargement...</p>';
         
-        fetch('/api/personnes')
+        // Détection automatique de l'environnement
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocal ? '/api/personnes' : 'https://monpgm-cy65.onrender.com/api/personnes';
+        
+        console.log('🌍 Environnement:', isLocal ? 'LOCAL' : 'PRODUCTION');
+        console.log('🔗 URL API:', apiUrl);
+        
+        fetch(apiUrl)
         .then(response => {
             console.log('Réponse:', response.status);
             if (!response.ok) {
