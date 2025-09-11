@@ -1,6 +1,5 @@
 package com.example.personneapp.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,13 +14,5 @@ public class Personne {
     private Long id;
     private String nom;
     private Integer age;
-    
-    // Constructeur par défaut nécessaire pour Spring
-    public Personne() {}
-    
-    public Personne(String nom, Integer age) {
-        this.nom = nom;
-        this.age = age;
-    }
 }
 
