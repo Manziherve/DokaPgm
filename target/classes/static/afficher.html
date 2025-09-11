@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des Personnes</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Liste des Personnes</h1>
+    
+    <button onclick="loadPersons()">Actualiser</button>
+    
+    <div id="personsList"></div>
+    
+    <p><a href="index.html">Retour à l'accueil</a></p>
+
+<script>
+    // Charger automatiquement au démarrage
+    document.addEventListener('DOMContentLoaded', loadPersons);
+
+    function loadPersons() {
+        console.log('Chargement des personnes...');
+        const container = document.getElementById('personsList');
+        container.innerHTML = '<p>Chargement...</p>';
+        
+        fetch('https://monpgm-cy65.onrender.com/api/personnes')
+        .then(response => {
+            console.log('Réponse:', response.status);
+            if (!response.ok) {
+                throw new Error('Erreur HTTP: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(persons => {
+            console.log('Données reçues:', persons);
+            displayPersons(persons);
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            container.innerHTML = '<p style="color:red">Erreur: Impossible de récupérer les données.</p>';
+        });
+    }
+
+    function displayPersons(persons) {
+        const container = document.getElementById('personsList');
+        
+        if (!persons || persons.length === 0) {
+            container.innerHTML = '<p>Aucune personne enregistrée.</p>';
+            return;
+        }
+
+        let html = '<ul>';
+        persons.forEach(person => {
+            html += '<li>' + person.nom + ' - ' + person.age + ' ans</li>';
+        });
+        html += '</ul>';
+        
+        container.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -83,13 +83,13 @@ const form = document.getElementById('form');
 const btn = document.getElementById('btn');
 const msg = document.getElementById('message');
 
-form.onsubmit = function(e) {
+form.onsubmit = async function(e) {
     e.preventDefault();
     
     const nom = document.getElementById('nom').value.trim();
     const age = parseInt(document.getElementById('age').value);
     
-    // VALIDATION CORRIGÉE
+    // VALIDATION
     if (!nom) {
         showMsg('Le nom est requis.', 'error');
         return;
@@ -104,42 +104,52 @@ form.onsubmit = function(e) {
     btn.textContent = 'Ajout...';
     showMsg('Ajout en cours...', 'info');
     
-    // VERSION COMPATIBLE SANS async/await
-    fetch('/api/personnes', {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
-        },
-        body: JSON.stringify({ nom: nom, age: age })
-    })
-    .then(function(response) {
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
+    try {
+        // VERSION MODERNE AVEC async/await + TIMEOUT
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
         
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('HTTP ' + response.status);
+        console.log('🚀 Envoi requête vers API...');
+        
+        const response = await fetch('https://monpgm-cy65.onrender.com/api/personnes', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({ nom, age }),
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        console.log('📡 Réponse reçue, status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
-    })
-    .then(function(data) {
-        console.log('Data received:', data);
-        showMsg('✅ ' + data.nom + ' ajouté avec succès !', 'success');
-        form.reset();
-        btn.disabled = false;
-        btn.textContent = 'Ajouter';
-    })
-    .catch(function(error) {
-        console.error('ERREUR DÉTAILLÉE:', error);
-        console.log('Type:', typeof error);
-        console.log('Name:', error.name);
-        console.log('Message:', error.message);
         
-        showMsg('❌ Erreur: ' + error.message, 'error');
+        const data = await response.json();
+        console.log('✅ Données:', data);
+        
+        showMsg(`✅ ${data.nom} ajouté avec succès !`, 'success');
+        form.reset();
+        
+    } catch (error) {
+        console.error('❌ ERREUR:', error);
+        
+        let errorMsg = error.message;
+        if (error.name === 'AbortError') {
+            errorMsg = 'Timeout - Le serveur met trop de temps à répondre';
+        } else if (error.message === 'Failed to fetch') {
+            errorMsg = 'Connexion impossible - Vérifiez votre réseau';
+        }
+        
+        showMsg(`❌ Erreur: ${errorMsg}`, 'error');
+        
+    } finally {
         btn.disabled = false;
         btn.textContent = 'Ajouter';
-    });
+    }
 };
 
 function showMsg(text, type) {
