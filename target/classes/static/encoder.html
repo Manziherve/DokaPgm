@@ -83,14 +83,20 @@ const form = document.getElementById('form');
 const btn = document.getElementById('btn');
 const msg = document.getElementById('message');
 
-form.onsubmit = async function(e) {
+form.onsubmit = function(e) {
     e.preventDefault();
     
     const nom = document.getElementById('nom').value.trim();
     const age = parseInt(document.getElementById('age').value);
     
-    if (!nom || age < 0 || age > 120) {
-        showMsg('Veuillez remplir correctement tous les champs.', 'error');
+    // VALIDATION CORRIGÉE
+    if (!nom) {
+        showMsg('Le nom est requis.', 'error');
+        return;
+    }
+    
+    if (isNaN(age) || age < 0 || age > 120) {
+        showMsg('L\'âge doit être un nombre valide entre 0 et 120.', 'error');
         return;
     }
     
@@ -98,34 +104,42 @@ form.onsubmit = async function(e) {
     btn.textContent = 'Ajout...';
     showMsg('Ajout en cours...', 'info');
     
-    try {
-        const response = await fetch('/api/personnes', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            },
-            body: JSON.stringify({ nom, age })
-        });
+    // VERSION COMPATIBLE SANS async/await
+    fetch('/api/personnes', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify({ nom: nom, age: age })
+    })
+    .then(function(response) {
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
         
         if (response.ok) {
-            const data = await response.json();
-            showMsg(`✅ ${data.nom} ajouté avec succès !`, 'success');
-            form.reset();
+            return response.json();
         } else {
-            throw new Error(`Erreur ${response.status}`);
+            throw new Error('HTTP ' + response.status);
         }
-    } catch (error) {
-        console.error(error);
-        if (error.message.includes('fetch')) {
-            showMsg('❌ Problème de connexion. Actualisez la page (F5) et réessayez.', 'error');
-        } else {
-            showMsg('❌ Erreur lors de l\'ajout. Réessayez dans quelques secondes.', 'error');
-        }
-    } finally {
+    })
+    .then(function(data) {
+        console.log('Data received:', data);
+        showMsg('✅ ' + data.nom + ' ajouté avec succès !', 'success');
+        form.reset();
         btn.disabled = false;
         btn.textContent = 'Ajouter';
-    }
+    })
+    .catch(function(error) {
+        console.error('ERREUR DÉTAILLÉE:', error);
+        console.log('Type:', typeof error);
+        console.log('Name:', error.name);
+        console.log('Message:', error.message);
+        
+        showMsg('❌ Erreur: ' + error.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Ajouter';
+    });
 };
 
 function showMsg(text, type) {
