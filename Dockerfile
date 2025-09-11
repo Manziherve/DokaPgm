@@ -1,5 +1,5 @@
 # Étape 1: Build avec Maven
-FROM maven:3.8.6-openjdk-17 AS builder
+FROM maven:3.9.4-eclipse-temurin-17 AS builder
 
 # Copie les fichiers du projet
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Étape 2: Image finale
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 # Répertoire de travail
 WORKDIR /app
